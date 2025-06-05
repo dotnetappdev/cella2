@@ -1,0 +1,56 @@
+@page "/routes/manage"
+@using Cella.Models
+@inject HttpClient Http
+
+<h3>Manage Routes</h3>
+
+<button class="btn btn-primary mb-2" @onclick="ShowAddRouteModal">Add Route</button>
+
+@if (routes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Route Id</th>
+                <th>From</th>
+                <th>Destination</th>
+                <th>Stops</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var route in routes)
+            {
+                <tr>
+                    <td>@route.Id</td>
+                    <td>@route.FromCella</td>
+                    <td>@route.DesintationAddress</td>
+                    <td>@route.NumberOFStops</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<AddRouteModal @ref="addRouteModal" OnRouteAdded="LoadRoutes" />
+
+@code {
+    private List<DriverRoutes> routes;
+    private AddRouteModal addRouteModal;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRoutes();
+    }
+    private async Task LoadRoutes()
+    {
+        routes = await Http.GetFromJsonAsync<List<DriverRoutes>>("api/routes");
+        StateHasChanged();
+    }
+    private void ShowAddRouteModal()
+    {
+        addRouteModal.Open();
+    }
+}

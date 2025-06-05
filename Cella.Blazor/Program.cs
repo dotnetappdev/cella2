@@ -21,13 +21,13 @@ public class Program
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-     
+
 
         var configuration = builder.Configuration;
         // Add services to the container.
         builder.Services.AddSyncfusionBlazor();
         builder.Services.AddRazorComponents()
-            
+
             .AddInteractiveServerComponents();
 
         builder.Services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
@@ -55,7 +55,7 @@ public class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-  
+
         builder.Services.AddIdentityCore<ApplicationUser>(options =>
             options.SignIn.RequireConfirmedAccount = false)
             .AddRoles<ApplicationRole>() // Add Role support
@@ -86,16 +86,16 @@ public class Program
 
         app.MapStaticAssets();
         app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
-               //.AddAdditionalAssemblies(typeof(Cella.Components.Pages.stock.Index).Assembly);
+        //.AddAdditionalAssemblies(typeof(Cella.Components.Pages.stock.Index).Assembly);
 
 
-        using (var scope = app.Services.CreateScope())
-        {
-            var services = scope.ServiceProvider;
-            await SeedData.SeedUsersAndRoles(services);
-        }
+        //using (var scope = app.Services.CreateScope())
+        //{
+        //    var services = scope.ServiceProvider;
+        //    await SeedData.SeedUsersAndRoles(services);
+        //}
 
- 
+
         // Open the Electron-Window here
 
         app.Run();

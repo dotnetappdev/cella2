@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cella.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250605072604_firstMigrations")]
+    [Migration("20250605080838_firstMigrations")]
     partial class firstMigrations
     {
         /// <inheritdoc />
@@ -54,6 +54,9 @@ namespace Cella.Infrastructure.Data.Migrations
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("HouseNumber")
                         .HasMaxLength(3)
@@ -106,6 +109,8 @@ namespace Cella.Infrastructure.Data.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Address");
                 });
@@ -795,9 +800,6 @@ namespace Cella.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -865,8 +867,6 @@ namespace Cella.Infrastructure.Data.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
 
                     b.ToTable("Customers");
                 });
@@ -2129,20 +2129,18 @@ namespace Cella.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Cella.Models.Address", b =>
+                {
+                    b.HasOne("Cella.Models.Customer", null)
+                        .WithMany("Addresses")
+                        .HasForeignKey("CustomerId");
+                });
+
             modelBuilder.Entity("Cella.Models.BillOfMaterialsItem", b =>
                 {
                     b.HasOne("Cella.Models.BillOfMaterials", null)
                         .WithMany("Items")
                         .HasForeignKey("BillOfMaterialsId");
-                });
-
-            modelBuilder.Entity("Cella.Models.Customer", b =>
-                {
-                    b.HasOne("Cella.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
-
-                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Cella.Models.FileAttachments", b =>
@@ -2302,6 +2300,11 @@ namespace Cella.Infrastructure.Data.Migrations
             modelBuilder.Entity("Cella.Models.BillOfMaterials", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Cella.Models.Customer", b =>
+                {
+                    b.Navigation("Addresses");
                 });
 
             modelBuilder.Entity("Cella.Models.SalesOrder", b =>

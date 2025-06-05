@@ -1,0 +1,71 @@
+@using Microsoft.AspNetCore.Components.Forms
+@using Cella.Models
+@inject HttpClient Http
+
+@if (IsOpen)
+{
+    <div class="modal show d-block" tabindex="-1" style="background:rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Driver</h5>
+                    <button type="button" class="btn-close" @onclick="Close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="driver" OnValidSubmit="CreateDriverAsync">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="mb-3">
+                            <label class="form-label">First Name</label>
+                            <InputText class="form-control" @bind-Value="driver.FirstName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Last Name</label>
+                            <InputText class="form-control" @bind-Value="driver.LastName" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mobile Number</label>
+                            <InputText class="form-control" @bind-Value="driver.MobileNumber" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Route Id</label>
+                            <InputNumber class="form-control" @bind-Value="driver.RouteId" />
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="submit">Create</button>
+                            <button class="btn btn-secondary" type="button" @onclick="Close">Cancel</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public EventCallback OnDriverAdded { get; set; }
+    private Customer driver = new Customer();
+    private bool IsOpen { get; set; }
+    public void Open()
+    {
+        driver = new Customer();
+        IsOpen = true;
+        StateHasChanged();
+    }
+    private void Close()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
+    private async Task CreateDriverAsync()
+    {
+        driver.CustomerType = Customer.TypeOfCustomer.Driver;
+        var response = await Http.PostAsJsonAsync("api/drivers", driver);
+        if (response.IsSuccessStatusCode)
+        {
+            IsOpen = false;
+            if (OnDriverAdded.HasDelegate)
+                await OnDriverAdded.InvokeAsync();
+        }
+    }
+}

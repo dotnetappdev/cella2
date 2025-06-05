@@ -5,8 +5,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 	  <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+	  <UserSecretsId>de10b01f-7a94-485c-bf2f-9d1ee04e2526</UserSecretsId>
 
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="D:\Git\cella\Cella.Models\DeliveryEvidenceDtos.cs" Link="DeliveryEvidenceDtos.cs" />
+  </ItemGroup>
 
   <ItemGroup>
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.5" />

@@ -1,0 +1,60 @@
+@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+
+@if (IsOpen)
+{
+    <div class="modal show d-block" tabindex="-1" style="background:rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Stops Until This Stop</h5>
+                    <button type="button" class="btn-close" @onclick="Close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="stopsModel" OnValidSubmit="UpdateStopsAsync">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="mb-3">
+                            <label class="form-label">Stops Until This Stop</label>
+                            <InputNumber class="form-control" @bind-Value="stopsModel.Stops" />
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="submit">Update</button>
+                            <button class="btn btn-secondary" type="button" @onclick="Close">Cancel</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public EventCallback OnStopsUpdated { get; set; }
+    private bool IsOpen { get; set; }
+    private int customerId;
+    private StopsModel stopsModel = new StopsModel();
+    public void Open(int id)
+    {
+        customerId = id;
+        stopsModel = new StopsModel();
+        IsOpen = true;
+        StateHasChanged();
+    }
+    private void Close()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
+    private async Task UpdateStopsAsync()
+    {
+        var response = await Http.PostAsJsonAsync("api/drivers/update-stops", new { CustomerId = customerId, Stops = stopsModel.Stops });
+        if (response.IsSuccessStatusCode)
+        {
+            IsOpen = false;
+            if (OnStopsUpdated.HasDelegate)
+                await OnStopsUpdated.InvokeAsync();
+        }
+    }
+    public class StopsModel { public int Stops { get; set; } }
+}

@@ -14,39 +14,6 @@ namespace Cella.Infrastructure.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Address",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StoreId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Type = table.Column<int>(type: "int", nullable: true),
-                    HouseNumber = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: true),
-                    StreetName = table.Column<string>(type: "nvarchar(90)", maxLength: 90, nullable: true),
-                    Address1 = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
-                    Address2 = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
-                    City = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
-                    Town = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StateProvinceId = table.Column<int>(type: "int", nullable: true),
-                    PostCode = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
-                    Lat = table.Column<decimal>(type: "decimal(10,8)", precision: 18, scale: 4, nullable: true),
-                    Long = table.Column<decimal>(type: "decimal(11,8)", precision: 18, scale: 4, nullable: true),
-                    ModfiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    WarehouseId = table.Column<int>(type: "int", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
-                    isActive = table.Column<bool>(type: "bit", nullable: false),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Address", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -287,6 +254,40 @@ namespace Cella.Infrastructure.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Currencies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StoreId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DailingCountryCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CustomerType = table.Column<int>(type: "int", nullable: false),
+                    isBusinessMobile = table.Column<bool>(type: "bit", nullable: true),
+                    isPersonalMobile = table.Column<bool>(type: "bit", nullable: true),
+                    canSms = table.Column<bool>(type: "bit", nullable: true),
+                    canCall = table.Column<bool>(type: "bit", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    isOptOut = table.Column<bool>(type: "bit", nullable: false),
+                    isGpdr = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isActive = table.Column<bool>(type: "bit", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    GpsLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StopsUntilThisStop = table.Column<int>(type: "int", nullable: true),
+                    RouteId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -614,46 +615,6 @@ namespace Cella.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StoreId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AddressId = table.Column<int>(type: "int", nullable: true),
-                    DailingCountryCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CustomerType = table.Column<int>(type: "int", nullable: false),
-                    isBusinessMobile = table.Column<bool>(type: "bit", nullable: true),
-                    isPersonalMobile = table.Column<bool>(type: "bit", nullable: true),
-                    canSms = table.Column<bool>(type: "bit", nullable: true),
-                    canCall = table.Column<bool>(type: "bit", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    isOptOut = table.Column<bool>(type: "bit", nullable: false),
-                    isGpdr = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    isActive = table.Column<bool>(type: "bit", nullable: false),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    GpsLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StopsUntilThisStop = table.Column<int>(type: "int", nullable: true),
-                    RouteId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Customers_Address_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Address",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -861,48 +822,68 @@ namespace Cella.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ShoppingCarts",
+                name: "Address",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SalesOrderId = table.Column<int>(type: "int", nullable: true),
-                    SessionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    TeannatId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CustomerId = table.Column<int>(type: "int", nullable: true),
-                    DeliveryCustomerId = table.Column<int>(type: "int", nullable: true),
-                    GiftCardAppliedId = table.Column<int>(type: "int", nullable: true),
-                    SubTotal = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
-                    Vat = table.Column<int>(type: "int", nullable: true),
-                    Total = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
-                    Weight = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
-                    Height = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
-                    Length = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
-                    Depth = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: true),
-                    isActive = table.Column<bool>(type: "bit", nullable: true),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StoreId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: true),
+                    HouseNumber = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: true),
+                    StreetName = table.Column<string>(type: "nvarchar(90)", maxLength: 90, nullable: true),
+                    Address1 = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
+                    Address2 = table.Column<string>(type: "nvarchar(70)", maxLength: 70, nullable: true),
+                    City = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
+                    Town = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StateProvinceId = table.Column<int>(type: "int", nullable: true),
+                    PostCode = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    Lat = table.Column<decimal>(type: "decimal(10,8)", precision: 18, scale: 4, nullable: true),
+                    Long = table.Column<decimal>(type: "decimal(11,8)", precision: 18, scale: 4, nullable: true),
+                    ModfiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    WarehouseId = table.Column<int>(type: "int", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
+                    isActive = table.Column<bool>(type: "bit", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CustomerId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShoppingCarts", x => x.Id);
+                    table.PrimaryKey("PK_Address", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ShoppingCarts_Address_CustomerId",
+                        name: "FK_Address_Customers_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "Address",
+                        principalTable: "Customers",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Stores",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StoreId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Domain = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IPAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdminContactId = table.Column<int>(type: "int", nullable: true),
+                    LastMofiedBy = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isAcitve = table.Column<bool>(type: "bit", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Stores", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ShoppingCarts_Address_DeliveryCustomerId",
-                        column: x => x.DeliveryCustomerId,
-                        principalTable: "Address",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ShoppingCarts_GifCards_GiftCardAppliedId",
-                        column: x => x.GiftCardAppliedId,
-                        principalTable: "GifCards",
+                        name: "FK_Stores_Customers_AdminContactId",
+                        column: x => x.AdminContactId,
+                        principalTable: "Customers",
                         principalColumn: "Id");
                 });
 
@@ -979,29 +960,48 @@ namespace Cella.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Stores",
+                name: "ShoppingCarts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StoreId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SalesOrderId = table.Column<int>(type: "int", nullable: true),
+                    SessionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    TeannatId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Domain = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IPAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AdminContactId = table.Column<int>(type: "int", nullable: true),
-                    LastMofiedBy = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    isAcitve = table.Column<bool>(type: "bit", nullable: false),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    CustomerId = table.Column<int>(type: "int", nullable: true),
+                    DeliveryCustomerId = table.Column<int>(type: "int", nullable: true),
+                    GiftCardAppliedId = table.Column<int>(type: "int", nullable: true),
+                    SubTotal = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
+                    Vat = table.Column<int>(type: "int", nullable: true),
+                    Total = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
+                    Weight = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
+                    Height = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
+                    Length = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
+                    Depth = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    isActive = table.Column<bool>(type: "bit", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Stores", x => x.Id);
+                    table.PrimaryKey("PK_ShoppingCarts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Stores_Customers_AdminContactId",
-                        column: x => x.AdminContactId,
-                        principalTable: "Customers",
+                        name: "FK_ShoppingCarts_Address_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Address",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ShoppingCarts_Address_DeliveryCustomerId",
+                        column: x => x.DeliveryCustomerId,
+                        principalTable: "Address",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ShoppingCarts_GifCards_GiftCardAppliedId",
+                        column: x => x.GiftCardAppliedId,
+                        principalTable: "GifCards",
                         principalColumn: "Id");
                 });
 
@@ -1077,6 +1077,11 @@ namespace Cella.Infrastructure.Data.Migrations
                 values: new object[] { 1, null, null, null, null, null, null, null, null, null, null, null, "~\\Uploads\\", null, null, false, false });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Address_CustomerId",
+                table: "Address",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -1119,11 +1124,6 @@ namespace Cella.Infrastructure.Data.Migrations
                 name: "IX_BillOfMaterialsItem_BillOfMaterialsId",
                 table: "BillOfMaterialsItem",
                 column: "BillOfMaterialsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Customers_AddressId",
-                table: "Customers",
-                column: "AddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FileAttachments_UploadedBy",
@@ -1302,16 +1302,16 @@ namespace Cella.Infrastructure.Data.Migrations
                 name: "ShoppingCarts");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Address");
 
             migrationBuilder.DropTable(
                 name: "GifCards");
 
             migrationBuilder.DropTable(
-                name: "Address");
+                name: "Customers");
         }
     }
 }

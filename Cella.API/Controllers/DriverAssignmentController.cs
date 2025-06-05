@@ -1,6 +1,7 @@
 using Cella.Infrastructure;
 using Cella.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Cella.API.Controllers
@@ -21,7 +22,13 @@ namespace Cella.API.Controllers
         {
             var order = _context.Set<SalesOrder>().FirstOrDefault(o => o.Id == request.OrderId);
             var customer = _context.Customers.FirstOrDefault(c => c.Id == order.Customer);
-            var driver = _context.Customers.FirstOrDefault(d => d.CustomerType == Customer.TypeOfCustomer.Driver && d.Address.PostCode == customer.Address.PostCode);
+            var postcode = customer.Addresses.FirstOrDefault()?.PostCode;
+
+            var driver = _context.Customers
+                .Include(c => c.Addresses)
+                .FirstOrDefault(d =>
+                    d.CustomerType == Customer.TypeOfCustomer.Driver &&
+                    d.Addresses.Any(a => a.PostCode == postcode));
             if (driver == null)
                 return NotFound("No driver found for this postcode");
             // Here you would update the order/route assignment as needed

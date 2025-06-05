@@ -31,16 +31,15 @@ namespace Cella.API
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                await DataSeeder.SeedRolesAndUsers(services);
-            }
+
             app.MapOpenApi();
 
 
             app.MapIdentityApi<ApplicationUser>();
+            app.AddAuthorizationMiddleware();
             app.AddSwaggerUI();
+
+            app.UseDeveloperExceptionPage();
 
             app.UseHttpsRedirection();
 
@@ -52,11 +51,6 @@ namespace Cella.API
 
 
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                await SeedData.SeedUsersAndRoles(services);
-            }
 
             app.Run();
         }

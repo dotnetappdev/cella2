@@ -18,7 +18,7 @@ namespace Cella.API
     public static class ServiceRegistrationExtensions
     {
         // Register DbContext and Identity with SQL Server
-        public static void AddApplicationServices(this IServiceCollection services,string connectionstring)
+        public static void AddApplicationServices(this IServiceCollection services, string connectionstring)
         {
             // Register ApplicationDbContext with SQL Server
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -28,7 +28,7 @@ namespace Cella.API
            .AddRoles<IdentityRole>()
            .AddEntityFrameworkStores<ApplicationDbContext>();
 
-               services.AddEndpointsApiExplorer();
+            services.AddEndpointsApiExplorer();
 
         }
 
@@ -100,17 +100,17 @@ namespace Cella.API
                     ValidAudience = appSettings.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(key)
                 };
-            })
-            .AddGoogle(googleOptions =>
-            {
-                googleOptions.ClientId = appSettings.GoogleAuth.ClientId;
-                googleOptions.ClientSecret = appSettings.GoogleAuth.ClientSecret;
-            })
-            .AddMicrosoftAccount(microsoftOptions =>
-            {
-                microsoftOptions.ClientId = appSettings.MicrosoftAuth.ClientId;
-                microsoftOptions.ClientSecret = appSettings.MicrosoftAuth.ClientSecret;
             });
+            //.AddGoogle(googleOptions =>
+            //{
+            //    googleOptions.ClientId = appSettings.GoogleAuth.ClientId;
+            //    googleOptions.ClientSecret = appSettings.GoogleAuth.ClientSecret;
+            //})
+            //.AddMicrosoftAccount(microsoftOptions =>
+            //{
+            //    microsoftOptions.ClientId = appSettings.MicrosoftAuth.ClientId;
+            //    microsoftOptions.ClientSecret = appSettings.MicrosoftAuth.ClientSecret;
+            //});
         }
 
         // Register application-specific middlewares (optional)
