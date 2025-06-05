@@ -12,7 +12,7 @@ namespace Cella.API
         {
             var builder = WebApplication.CreateBuilder(args);
             var configuration = builder.Configuration;
- 
+
             builder.Services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
 
             var appSettings = configuration.GetSection("AppSettings").Get<AppSettings>();
@@ -24,10 +24,10 @@ namespace Cella.API
             builder.Services.AddBusinessServices();
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-                       builder.Services.AddControllerServices(appSettings);
+            builder.Services.AddControllerServices(appSettings);
             var testc = appSettings.ConnectionStrings;
-            var testd =appSettings.GetDefaultConnection();
-             builder.Services.AddApplicationServices(appSettings.GetDefaultConnection());
+            var testd = appSettings.GetDefaultConnection();
+            builder.Services.AddApplicationServices(appSettings.GetDefaultConnection());
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -38,7 +38,7 @@ namespace Cella.API
             }
             app.MapOpenApi();
 
-        
+
             app.MapIdentityApi<ApplicationUser>();
             app.AddSwaggerUI();
 
@@ -49,6 +49,14 @@ namespace Cella.API
 
 
             app.MapControllers();
+
+
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                await SeedData.SeedUsersAndRoles(services);
+            }
 
             app.Run();
         }

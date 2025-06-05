@@ -1,6 +1,6 @@
 ﻿ 
 
-dotnet ef migrations add firstMigrations3 --output-dir Data/Migrations --context ApplicationDbContext
+dotnet ef migrations add firstMigrations  --output-dir Data/Migrations --context ApplicationDbContext
 
 default project   techdemo.Infrastructure
 cd Cella.Infrastructure

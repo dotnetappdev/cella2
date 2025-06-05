@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Cella.Models {
-    public class DriverRoutes {
+namespace Cella.Models
+{
+    public class DriverRoutes
+    {
 
 
-        public enum SafePlaceType { 
-        Garage=0,
-        BackPorch=1,
-        FrontPorch=2,
-        SideGate=3,
-        SecureAccessCode=4
+        public enum SafePlaceType
+        {
+            Garage = 0,
+            BackPorch = 1,
+            FrontPorch = 2,
+            SideGate = 3,
+            SecureAccessCode = 4
 
 
         }
@@ -33,8 +36,13 @@ namespace Cella.Models {
 
         public int? NumberOFStops { get; set; }
 
+
         public FileAttachments? PhotoDelivery { get; set; }
 
+        public string? Destination { get; set; }
+        public string? From { get; set; }
+        public string? To { get; set; }
+        public int? Stops { get; set; }
         public int SafePlace { get; set; }
 
         public bool IsActive { get; set; }
@@ -42,7 +50,7 @@ namespace Cella.Models {
         public bool isDeleted { get; set; }
         public DateTime CreatedDate { get; set; }
 
-        public string   CreatedBy { get; set; }
+        public string CreatedBy { get; set; }
 
         public int? CustomerId { get; set; } // Link to Customer
         public int? DriverId { get; set; } // Link to Driver

@@ -12,12 +12,12 @@
         <EditForm Model="newOrder" OnValidSubmit="CreateOrder">
             <div class="mb-3">
                 <label class="form-label">Type Role</label>
-                <div>
-                    <InputRadioGroup @bind-Value="newOrder.TypeRole">
-                        <InputRadio Value="Agent" /> Agent
-                        <InputRadio Value="Customer" class="ms-3" /> Customer
-                    </InputRadioGroup>
-                </div>
+             <div>
+                    <InputSelect @bind-Value="newOrder.TypeRole" class="form-select">
+                        <option value="Customer">Customer</option>
+                        <option value="Agent">Agent</option>
+                    </InputSelect>
+</div>
             </div>
             @if (newOrder.TypeRole == "Agent")
             {
@@ -226,7 +226,7 @@ else
 
     public class SalesOrderCreateModel
     {
-        public string TypeRole { get; set; } = "Customer";
+        public string TypeRole { get; set; }
         public int? Customer { get; set; }
         public List<SalesOrderLineModel> Lines { get; set; } = new();
     }

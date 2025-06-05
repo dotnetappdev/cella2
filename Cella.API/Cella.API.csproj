@@ -47,6 +47,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Cella.Domain\Cella.Domain.csproj" />
     <ProjectReference Include="..\Cella.Infrastructure\Cella.Infrastructure.csproj" />
+    <ProjectReference Include="..\Cella.Models\Cella.Models.csproj" />
   </ItemGroup>
 
 </Project>

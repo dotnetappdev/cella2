@@ -52,20 +52,8 @@
     private string SelectedUserId { get; set; }
     private string SelectedRole { get; set; }
 
-    public async Task Open()
-    {
-        Users = await UserManager.Users.ToListAsync();
-        Roles = RoleManager.Roles.ToList();
-        SelectedUserId = null;
-        SelectedRole = null;
-        IsOpen = true;
-        StateHasChanged();
-    }
-    private void Close()
-    {
-        IsOpen = false;
-        StateHasChanged();
-    }
+   
+   
     private async Task AssignRole()
     {
         if (!string.IsNullOrEmpty(SelectedUserId) && !string.IsNullOrEmpty(SelectedRole))

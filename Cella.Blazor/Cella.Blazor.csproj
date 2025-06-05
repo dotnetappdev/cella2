@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\Admin\**" />
+    <Content Remove="Components\Admin\**" />
+    <EmbeddedResource Remove="Components\Admin\**" />
+    <None Remove="Components\Admin\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="23.6.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="9.0.0" />
@@ -32,7 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Admin\Pages\Test\" />
     <Folder Include="Components\NewFolder\" />
   </ItemGroup>
 
