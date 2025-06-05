@@ -25,7 +25,7 @@ namespace Cella.Models
 
         public virtual Drivers Driver { get; set; }
 
-        public virtual Address DeliveryAddress { get; set; }
+        public virtual int? DeliveryAddress { get; set; }
 
     }
 }

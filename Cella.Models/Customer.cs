@@ -24,7 +24,7 @@ namespace Cella.Models
         public string Name => $"{FirstName} {LastName}".Trim();
 
 
-        public virtual Address Address { get; set; }
+        public int? Address Address { get; set; }
         public string? DailingCountryCode { get; set; }
 
         public string MobileNumber { get; set; }
