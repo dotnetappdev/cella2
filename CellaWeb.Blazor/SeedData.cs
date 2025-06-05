@@ -1,16 +1,38 @@
-﻿using Cella.Models;
+﻿using Cella.Infrastructure;
+using Cella.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 public static class SeedData
 {
     public static async Task SeedUsersAndRoles(IServiceProvider serviceProvider)
     {
+        var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        // 0. Remove all users and roles
+        // Remove users
+        var allUsers = await dbContext.Users.ToListAsync();
+        foreach (var user in allUsers)
+        {
+            await userManager.DeleteAsync(user);
+        }
+
+        // Remove roles
+        var allRoles = await dbContext.Roles.ToListAsync();
+        foreach (var role in allRoles)
+        {
+            await roleManager.DeleteAsync(role);
+        }
+
+        // Save changes to ensure clean state
+        await dbContext.SaveChangesAsync();
 
         // 1. Define roles
         var roles = new List<ApplicationRole>
@@ -23,13 +45,10 @@ public static class SeedData
             new ApplicationRole { Name = "Agent", Description = "Agent role" }
         };
 
-        // 2. Create roles if they don't exist
+        // 2. Create roles
         foreach (var role in roles)
         {
-            if (!await roleManager.RoleExistsAsync(role.Name))
-            {
-                await roleManager.CreateAsync(role);
-            }
+            await roleManager.CreateAsync(role);
         }
 
         // 3. Define users and their roles
@@ -47,26 +66,23 @@ public static class SeedData
         // 4. Create users and assign roles
         foreach (var (email, password, assignedRoles) in users)
         {
-            if (await userManager.FindByEmailAsync(email) == null)
+            var user = new ApplicationUser
             {
-                var user = new ApplicationUser
-                {
-                    UserName = email,
-                    Email = email,
-                    EmailConfirmed = true
-                };
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true
+            };
 
-                var result = await userManager.CreateAsync(user, password);
+            var result = await userManager.CreateAsync(user, password);
 
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRolesAsync(user, assignedRoles);
-                    Console.WriteLine($"User '{email}' created and assigned to roles: {string.Join(", ", assignedRoles)}");
-                }
-                else
-                {
-                    Console.WriteLine($"Failed to create user '{email}': {string.Join(", ", result.Errors.Select(e => e.Description))}");
-                }
+            if (result.Succeeded)
+            {
+                await userManager.AddToRolesAsync(user, assignedRoles);
+                Console.WriteLine($"User '{email}' created and assigned to roles: {string.Join(", ", assignedRoles)}");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to create user '{email}': {string.Join(", ", result.Errors.Select(e => e.Description))}");
             }
         }
     }
