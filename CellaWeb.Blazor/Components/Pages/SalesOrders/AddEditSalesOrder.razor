@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Cella.Models
+@inject HttpClient Http
+
+@if (IsOpen)
+{
+    <div class="modal show d-block" tabindex="-1" style="background:rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Sales Order</h5>
+                    <button type="button" class="btn-close" @onclick="Close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="order" OnValidSubmit="CreateSalesOrder">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="mb-3">
+               
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter] public EventCallback OnDriverAdded { get; set; }
+    private SalesOrder order = new SalesOrder();
+    private bool IsOpen { get; set; }
+    private List<SalesOrder> orders;
+    private AddEditSalesOrder addEditSalesOrder;
+    private int selectedOrderId;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadOrders();
+    }
+    private async Task LoadOrders()
+    {
+        orders = await Http.GetFromJsonAsync<List<SalesOrder>>("api/salesorders");
+        StateHasChanged();
+    }
+    private void ShowSalesOrderModal(int orderId)
+    {
+        addEditSalesOrder?.Open();
+    }
+
+    public void Open()
+    {
+        order = new SalesOrder();
+        IsOpen = true;
+        StateHasChanged();
+    }
+    private void Close()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
+    private async Task CreateSalesOrder()
+    { 
+        var response = await Http.PostAsJsonAsync("api/salesorders", order);
+        if (response.IsSuccessStatusCode)
+        {
+            IsOpen = false;
+            if (OnDriverAdded.HasDelegate)
+                await OnDriverAdded.InvokeAsync();
+        }
+    }
+}

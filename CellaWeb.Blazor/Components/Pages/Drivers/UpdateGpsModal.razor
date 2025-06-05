@@ -1,0 +1,60 @@
+@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+
+@if (IsOpen)
+{
+    <div class="modal show d-block" tabindex="-1" style="background:rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Driver GPS</h5>
+                    <button type="button" class="btn-close" @onclick="Close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="gpsModel" OnValidSubmit="UpdateGpsAsync">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="mb-3">
+                            <label class="form-label">GPS Location</label>
+                            <InputText class="form-control" @bind-Value="gpsModel.GpsLocation" />
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="submit">Update</button>
+                            <button class="btn btn-secondary" type="button" @onclick="Close">Cancel</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public EventCallback OnGpsUpdated { get; set; }
+    private bool IsOpen { get; set; }
+    private int driverId;
+    private GpsModel gpsModel = new GpsModel();
+    public void Open(int id)
+    {
+        driverId = id;
+        gpsModel = new GpsModel();
+        IsOpen = true;
+        StateHasChanged();
+    }
+    private void Close()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
+    private async Task UpdateGpsAsync()
+    {
+        var response = await Http.PostAsJsonAsync("api/drivers/update-gps", new { DriverId = driverId, GpsLocation = gpsModel.GpsLocation });
+        if (response.IsSuccessStatusCode)
+        {
+            IsOpen = false;
+            if (OnGpsUpdated.HasDelegate)
+                await OnGpsUpdated.InvokeAsync();
+        }
+    }
+    public class GpsModel { public string GpsLocation { get; set; } }
+}

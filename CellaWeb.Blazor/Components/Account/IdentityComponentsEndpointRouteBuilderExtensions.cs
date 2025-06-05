@@ -1,13 +1,14 @@
-using CellaWeb.Blazor.Components.Account.Pages;
-using CellaWeb.Blazor.Components.Account.Pages.Manage;
+using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-using System.Security.Claims;
-using System.Text.Json;
+using CellaWeb.Blazor.Components.Account.Pages;
+using CellaWeb.Blazor.Components.Account.Pages.Manage;
+
 
 namespace Microsoft.AspNetCore.Routing
 {
@@ -27,8 +28,8 @@ namespace Microsoft.AspNetCore.Routing
                 [FromForm] string returnUrl) =>
             {
                 IEnumerable<KeyValuePair<string, StringValues>> query = [
-                    new("ReturnUrl", returnUrl),
-                    new("Action", ExternalLogin.LoginCallbackAction)];
+                 new("ReturnUrl", returnUrl),
+                new("Action", ExternalLogin.LoginCallbackAction)];
 
                 var redirectUrl = UriHelper.BuildRelative(
                     context.Request.PathBase,
@@ -57,6 +58,7 @@ namespace Microsoft.AspNetCore.Routing
             {
                 // Clear the existing external cookie to ensure a clean login process
                 await context.SignOutAsync(IdentityConstants.ExternalScheme);
+
 
                 var redirectUrl = UriHelper.BuildRelative(
                     context.Request.PathBase,

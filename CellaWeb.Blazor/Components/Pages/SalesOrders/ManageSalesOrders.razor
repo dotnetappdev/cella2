@@ -1,0 +1,69 @@
+@page "/salesorders/manage"
+@using Cella.Models
+@inject HttpClient Http
+
+<h3>Manage Sales Orders</h3>
+
+@if (orders == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+
+ 
+<button @onclick="() => ShowSalesOrderModal()">Add/Edit Sales Order</button>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order Id</th>
+                <th>Customer</th>
+                <th>Order Total</th>
+                <th>Assign Driver</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in orders)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.Customer</td>
+                    <td>@order.OrderTotal</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" @onclick="() => ShowSalesOrderModal()">Assign Driver</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+<AddEditSalesOrder @ref="salesOrderModal" OnDriverAdded="LoadOrders" />
+
+@code {
+    private List<SalesOrder> orders = new();
+    private AddEditSalesOrder salesOrderModal = new();
+    private int selectedOrderId;
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadOrders();
+    }
+    private async Task LoadOrders()
+    {
+        orders = await Http.GetFromJsonAsync<List<SalesOrder>>("api/salesorders");
+
+
+   
+        StateHasChanged();
+        
+    }
+    private void ShowSalesOrderModal()
+    {
+        
+        salesOrderModal.Open();
+     
+
+    }
+}

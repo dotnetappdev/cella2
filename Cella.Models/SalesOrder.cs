@@ -4,19 +4,21 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Cella.Models.ViewModels;
 
-namespace Cella.Models {
-   public  class SalesOrder {
+namespace Cella.Models
+{
+    public class SalesOrder
+    {
 
         public enum SalesOrderType
         {
-            SalesOrder=1,    
-            Bom=2,
-            PurchaseOrder =3,            
-            Quote=4,
-            PickList=5,
-            Invoice=6,
-            Despatched=7,
-            DespatchedPartial=8
+            SalesOrder = 1,
+            Bom = 2,
+            PurchaseOrder = 3,
+            Quote = 4,
+            PickList = 5,
+            Invoice = 6,
+            Despatched = 7,
+            DespatchedPartial = 8
 
         }
 
@@ -25,6 +27,12 @@ namespace Cella.Models {
         public Guid? UserId { get; set; }
 
         public Guid? TeannatId { get; set; }
+
+        public string? Description { get; set; }
+
+        public string? GiftMessage { get; set; }
+
+        public ICollection<Customer> Customer { get; set; }
 
         public int? Customer { get; set; }
 
@@ -49,16 +57,16 @@ namespace Cella.Models {
 
         public decimal? OrderTax { get; set; }
 
-        public decimal? OrderTotal  { get; set; }
+        public decimal? OrderTotal { get; set; }
 
         public int? PaymentMethod { get; set; }
         [StringLength(50)]
-        public string? IpAddress  { get; set; }
+        public string? IpAddress { get; set; }
         public bool? isGiftWrapping { get; set; }
         [StringLength(5000)]
-        public string? GiftMessage  { get; set; }
-        
-        public Guid?  CouponCode { get; set; }
+        public string? GiftMessage { get; set; }
+
+        public Guid? CouponCode { get; set; }
 
 
         public bool? GiftCard { get; set; }
@@ -71,7 +79,7 @@ namespace Cella.Models {
         public string? CreatedBy { get; set; }
 
         public bool? isActive { get; set; }
-        
+
         public bool? isDeleted { get; set; }
 
         public List<SalesOrderItem> Items { get; set; }

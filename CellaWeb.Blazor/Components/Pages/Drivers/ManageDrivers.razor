@@ -1,0 +1,101 @@
+@page "/drivers/manage"
+@using Cella.Models
+@inject HttpClient Http
+
+<h3>Manage Drivers</h3>
+
+<button class="btn btn-primary mb-2" @onclick="ShowAddDriverModal">Add Driver</button>
+
+@if (drivers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>Route</th>
+                <th>GPS Location</th>
+                <th>Stops Until This Stop</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var driver in pagedDrivers)
+            {
+                <tr>
+                    <td>@driver.FirstName @driver.LastName</td>
+                    <td>@driver.MobileNumber</td>
+                    <td>@driver.RouteId</td>
+                    <td>@driver.GpsLocation</td>
+                    <td>@driver.StopsUntilThisStop</td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" @onclick="() => ShowUpdateGpsModal(driver.Id)">Update GPS</button>
+                        <button class="btn btn-sm btn-info" @onclick="() => ShowUpdateStopsModal(driver.Id)">Update Stops</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav aria-label="Drivers pagination" class="d-flex justify-content-center mt-3">
+        <ul class="pagination">
+            <li class="page-item @(page == 1 ? "disabled" : null)">
+                <button class="page-link" @onclick="PrevPage">Previous</button>
+            </li>
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(page == i ? "active" : null)">
+                    <button class="page-link" @onclick="() => GoToPage(i)">@i</button>
+                </li>
+            }
+            <li class="page-item @(page == totalPages ? "disabled" : null)">
+                <button class="page-link" @onclick="NextPage">Next</button>
+            </li>
+        </ul>
+    </nav>
+}
+
+<AddDriverModal @ref="addDriverModal" OnDriverAdded="LoadDrivers" />
+<UpdateGpsModal @ref="updateGpsModal" OnGpsUpdated="LoadDrivers" />
+<UpdateStopsModal @ref="updateStopsModal" OnStopsUpdated="LoadDrivers" />
+
+@code {
+    private List<Customer> drivers;
+    private List<Customer> pagedDrivers = new();
+    private AddDriverModal addDriverModal;
+    private UpdateGpsModal updateGpsModal;
+    private UpdateStopsModal updateStopsModal;
+    private int page = 1;
+    private int pageSize = 10;
+    private int totalPages = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDrivers();
+    }
+
+    private async Task LoadDrivers()
+    {
+        drivers = await Http.GetFromJsonAsync<List<Customer>>("api/drivers");
+        ApplyPagination();
+        StateHasChanged();
+    }
+
+    private void ApplyPagination()
+    {
+        int count = drivers?.Count ?? 0;
+        totalPages = Math.Max(1, (int)Math.Ceiling(count / (double)pageSize));
+        if (page > totalPages) page = totalPages;
+        if (page < 1) page = 1;
+        pagedDrivers = drivers?.Skip((page - 1) * pageSize).Take(pageSize).ToList() ?? new List<Customer>();
+    }
+    private void PrevPage() { if (page > 1) { page--; ApplyPagination(); } }
+    private void NextPage() { if (page < totalPages) { page++; ApplyPagination(); } }
+    private void GoToPage(int p) { if (p != page) { page = p; ApplyPagination(); } }
+    private void ShowAddDriverModal() { addDriverModal.Open(); }
+    private void ShowUpdateGpsModal(int driverId) => updateGpsModal.Open(driverId);
+    private void ShowUpdateStopsModal(int driverId) => updateStopsModal.Open(driverId);
+}
