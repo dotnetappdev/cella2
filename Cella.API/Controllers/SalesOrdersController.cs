@@ -44,16 +44,16 @@ namespace Cella.API.Controllers
         [HttpPost]
         public IActionResult AddOrder([FromBody] SalesOrder order)
         {
-            if (order.Lines != null)
-            {
-                foreach (var line in order.Lines)
-                {
-                    if (line.BillOfMaterialsId.HasValue)
-                    {
-                        line.BillOfMaterials = _context.Set<BillOfMaterials>().Include(b => b.Items).FirstOrDefault(b => b.Id == line.BillOfMaterialsId);
-                    }
-                }
-            }
+            //if (order.Lines != null)
+            //{
+            //    foreach (var line in order.Lines)
+            //    {
+            //        if (line.BillOfMaterialsId.HasValue)
+            //        {
+            //            line.BillOfMaterials = _context.Set<BillOfMaterials>().Include(b => b.Items).FirstOrDefault(b => b.Id == line.BillOfMaterialsId);
+            //        }
+            //    }
+            //}
             _context.Set<SalesOrder>().Add(order);
             _context.SaveChanges();
             return Ok(order);

@@ -5,8 +5,8 @@
 @if (IsOpen)
 {
     <div class="modal show d-block" tabindex="-1" style="background:rgba(0,0,0,0.5);">
-        <div class="modal-dialog">
-            <div class="modal-content">
+        <div class="modal-dialog modal-xl" style="max-width: 900px; min-width: 700px; min-height: 600px;">
+            <div class="modal-content" style="min-height: 600px;">
                 <div class="modal-header">
                     <h5 class="modal-title">Create Sales Order</h5>
                     <button type="button" class="btn-close" @onclick="Close" aria-label="Close"></button>
@@ -15,8 +15,129 @@
                     <EditForm Model="order" OnValidSubmit="CreateSalesOrder">
                         <DataAnnotationsValidator />
                         <ValidationSummary />
-                        <div class="mb-3">
-               
+                        <ul class="nav nav-tabs mb-3" id="orderTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(activeTab == 0 ? "active" : "")" type="button" @onclick="() => SetTab(0)">Details</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link @(activeTab == 1 ? "active" : "")" type="button" @onclick="() => SetTab(1)">Items</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade @(activeTab == 0 ? "show active" : "")" id="detailsTab">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Customer</label>
+                                       <InputSelect class="form-select" @bind-Value="order.CustomerId">
+                                            <option value="">Select Customer</option>
+                                            @if (filteredCustomers != null)
+                                            {
+                                                foreach (var c in filteredCustomers)
+                                                {
+                                                    <option value="@c.Id">@c.Name</option>
+                                                }
+                                            }
+                                        </InputSelect>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Order Type</label>
+                                        <InputSelect class="form-select" @bind-Value="order.OrderType">
+                                            <option value="">Select Type</option>
+                                            @foreach (var type in Enum.GetValues(typeof(SalesOrder.SalesOrderType)))
+                                            {
+                                                <option value="@((int)type)">@type</option>
+                                            }
+                                        </InputSelect>
+                                    </div>
+                        @*             <div class="col-md-6">
+                                        <label class="form-label">  Pick Type</label>
+                                        <InputSelect class="form-select" @bind-Value="order.PickType">
+                                            <option value="">Select Pick Type</option>
+                                            <option value="Standard">Standard</option>
+                                            <option value="Express">Express</option>
+                                            <option value="Collection">Collection</option>
+                                        </InputSelect>
+                                    </div> *@
+                                    <div class="col-md-12">
+                                        <label class="form-label">Description</label>
+                                        <InputText class="form-control" @bind-Value="order.Description" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Order SubTotal</label>
+                                        <InputNumber class="form-control" @bind-Value="order.OrderSubTotal" step="0.01" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Order Shipping</label>
+                                        <InputNumber class="form-control" @bind-Value="order.OrderShipping" step="0.01" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Order Tax</label>
+                                        <InputNumber class="form-control" @bind-Value="order.OrderTax" step="0.01" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Order Total</label>
+                                        <InputNumber class="form-control" @bind-Value="order.OrderTotal" step="0.01" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade @(activeTab == 1 ? "show active" : "")" id="itemsTab">
+                                <div class="mt-2">
+                                    <table class="table table-bordered align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width:35%">Product</th>
+                                                <th style="width:20%">Quantity</th>
+                                                <th style="width:20%">Unit Price</th>
+                                                <th style="width:15%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (order.Lines == null || order.Lines.Count == 0)
+                                            {
+                                                <tr><td colspan="4" class="text-center">No items</td></tr>
+                                            }
+                                            else
+                                            {
+                                                @foreach (var line in order.Lines)
+                                                {
+                                                    var index = order.Lines.IndexOf(line);
+                                                    <tr>
+                                                        <td>
+                                                            <InputSelect class="form-select" @bind-Value="line.StockItemId">
+                                                                <option value="">Select Product</option>
+                                                                @if (products != null)
+                                                                {
+                                                                    foreach (var p in products)
+                                                                    {
+                                                                        <option value="@p.Id">@p.Name (@p.StockCode)</option>
+                                                                    }
+                                                                }
+                                                            </InputSelect>
+                                                        </td>
+                                                        <td>
+                                                            <InputNumber class="form-control" @bind-Value="line.Quantity" min="1" />
+                                                        </td>
+                                                        <td>
+                                                            <InputNumber class="form-control" @bind-Value="line.Price" step="0.01" />
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-danger btn-sm"
+                                                                    @onclick="() => RemoveLine(index)"
+                                                                    disabled="@(order.Lines.Count == 1)">
+                                                                <span class="bi bi-trash"></span>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="btn btn-success btn-sm" @onclick="AddLine"><span class="bi bi-plus"></span> Add Line</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-primary px-4 py-2">Create Order</button>
                         </div>
                     </EditForm>
                 </div>
@@ -26,22 +147,62 @@
 }
 
 @code {
-
     [Parameter] public EventCallback OnDriverAdded { get; set; }
     private SalesOrder order = new SalesOrder();
     private bool IsOpen { get; set; }
-    private List<SalesOrder> orders;
-    private AddEditSalesOrder addEditSalesOrder;
+    private List<SalesOrder>? orders;
+    private AddEditSalesOrder? addEditSalesOrder;
     private int selectedOrderId;
+    private List<Customer>? customers = new();
+    private List<StockItem>? products = new();
+    private int activeTab = 0;
+    private string customerSearch = string.Empty;
+    private List<Customer> filteredCustomers => string.IsNullOrWhiteSpace(customerSearch)
+        ? (customers ?? new List<Customer>())
+        : (customers ?? new List<Customer>()).Where(c => c.Name != null && c.Name.Contains(customerSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+
     protected override async Task OnInitializedAsync()
     {
         await LoadOrders();
+        customers = await Http.GetFromJsonAsync<List<Customer>>("api/salesorders/customers");
+        products = await Http.GetFromJsonAsync<List<StockItem>>("api/products/sample");
+        if (order.Lines == null || order.Lines.Count == 0)
+            order.Lines = new List<SalesOrderLine> { new SalesOrderLine() };
     }
+
+    public void Open(SalesOrder? orderToEdit = null)
+    {
+        if (orderToEdit != null)
+        {
+            order = new SalesOrder
+            {
+                Id = orderToEdit.Id,
+                CustomerId = orderToEdit.CustomerId,
+                Description = orderToEdit.Description,
+                OrderType = orderToEdit.OrderType,
+                OrderSubTotal = orderToEdit.OrderSubTotal,
+                OrderShipping = orderToEdit.OrderShipping,
+                OrderTax = orderToEdit.OrderTax,
+                OrderTotal = orderToEdit.OrderTotal,
+                Lines = orderToEdit.Lines != null && orderToEdit.Lines.Count > 0
+                    ? new List<SalesOrderLine>(orderToEdit.Lines)
+                    : new List<SalesOrderLine> { new SalesOrderLine() }
+            };
+        }
+        else
+        {
+            order = new SalesOrder { Lines = new List<SalesOrderLine> { new SalesOrderLine() } };
+        }
+        IsOpen = true;
+        StateHasChanged();
+    }
+
     private async Task LoadOrders()
     {
         orders = await Http.GetFromJsonAsync<List<SalesOrder>>("api/salesorders");
         StateHasChanged();
     }
+
     private void ShowSalesOrderModal(int orderId)
     {
         addEditSalesOrder?.Open();
@@ -50,16 +211,40 @@
     public void Open()
     {
         order = new SalesOrder();
+        order.Lines = new List<SalesOrderLine> { new SalesOrderLine() };
         IsOpen = true;
         StateHasChanged();
     }
+
     private void Close()
     {
         IsOpen = false;
         StateHasChanged();
     }
+
+    private void AddLine()
+    {
+        if (order.Lines == null)
+            order.Lines = new List<SalesOrderLine>();
+        order.Lines.Add(new SalesOrderLine());
+        StateHasChanged();
+    }
+
+    private void RemoveLine(int idx)
+    {
+        if (order.Lines == null)
+            return;
+
+        if (order.Lines.Count > 1)
+            order.Lines.RemoveAt(idx);
+        else if (order.Lines.Count == 1)
+            order.Lines[0] = new SalesOrderLine(); // Reset instead of clearing
+
+        StateHasChanged();
+    }
+
     private async Task CreateSalesOrder()
-    { 
+    {
         var response = await Http.PostAsJsonAsync("api/salesorders", order);
         if (response.IsSuccessStatusCode)
         {
@@ -67,5 +252,15 @@
             if (OnDriverAdded.HasDelegate)
                 await OnDriverAdded.InvokeAsync();
         }
+    }
+
+    private void SetTab(int tab)
+    {
+        activeTab = tab;
+    }
+
+    private void OnCustomerSearch(ChangeEventArgs e)
+    {
+        customerSearch = e.Value?.ToString() ?? string.Empty;
     }
 }

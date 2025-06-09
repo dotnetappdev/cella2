@@ -21,7 +21,7 @@ namespace Cella.API.Controllers
         public IActionResult AssignDriverToRoute([FromBody] AssignDriverRequest request)
         {
             var order = _context.Set<SalesOrder>().FirstOrDefault(o => o.Id == request.OrderId);
-            var customer = _context.Customers.FirstOrDefault(c => c.Id == order.Customer);
+            var customer = _context.Customers.FirstOrDefault(c => c.Id ==order.CustomerId);
             var postcode = customer.Addresses.FirstOrDefault()?.PostCode;
 
             var driver = _context.Customers

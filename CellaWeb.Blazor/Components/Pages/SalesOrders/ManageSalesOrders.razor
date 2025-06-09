@@ -10,10 +10,7 @@
 }
 else
 {
-
-
- 
-<button @onclick="() => ShowSalesOrderModal()">Add/Edit Sales Order</button>
+    <button class="btn btn-primary mb-3" @onclick="ShowSalesOrderModal">Add/Edit Sales Order</button>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -28,42 +25,45 @@ else
             {
                 <tr>
                     <td>@order.Id</td>
-                    <td>@order.Customer</td>
+                    <td>
+                        @if (order.Customer != null && order.Customer.Any())
+                        {
+                            @order.Customer.First().Name
+                        }
+                        else
+                        {
+                            <span>N/A</span>
+                        }
+                    </td>
                     <td>@order.OrderTotal</td>
                     <td>
-                        <button class="btn btn-sm btn-primary" @onclick="() => ShowSalesOrderModal()">Assign Driver</button>
+                        <button class="btn btn-sm btn-primary" @onclick="ShowSalesOrderModal">Assign Driver</button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
 }
 
 <AddEditSalesOrder @ref="salesOrderModal" OnDriverAdded="LoadOrders" />
 
 @code {
-    private List<SalesOrder> orders = new();
-    private AddEditSalesOrder salesOrderModal = new();
-    private int selectedOrderId;
+    private List<SalesOrder>? orders;
+    private AddEditSalesOrder? salesOrderModal;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadOrders();
     }
+
     private async Task LoadOrders()
     {
         orders = await Http.GetFromJsonAsync<List<SalesOrder>>("api/salesorders");
-
-
-   
         StateHasChanged();
-        
     }
+
     private void ShowSalesOrderModal()
     {
-        
-        salesOrderModal.Open();
-     
-
+        salesOrderModal?.Open();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Cella.Models.ViewModels;
@@ -24,17 +25,20 @@ namespace Cella.Models
 
         [Display(Name = "Order Number")]
         public int Id { get; set; }
+
         public Guid? UserId { get; set; }
+
 
         public Guid? TeannatId { get; set; }
 
+
         public string? Description { get; set; }
 
-        public string? GiftMessage { get; set; }
+
 
         public ICollection<Customer> Customer { get; set; }
 
-        public int? Customer { get; set; }
+        public int? CustomerId { get; set; }
 
         public int? PaymentStatus { get; set; }
 
@@ -81,10 +85,10 @@ namespace Cella.Models
         public bool? isActive { get; set; }
 
         public bool? isDeleted { get; set; }
+        public List<SalesOrderLine> Lines { get; set; }
 
-        public List<SalesOrderItem> Items { get; set; }
-        public List<SalesOrderLine> Lines { get; set; } = new();
         public string? OtpCode { get; set; }
+
 
     }
 }
